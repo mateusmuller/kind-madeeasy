@@ -1,6 +1,6 @@
 function _install_kind () {
 
-    local kind_version=${$1:-'v0.10.0'}
+    local kind_version=${1:-'v0.10.0'}
 
     curl -Lo ./kind "https://kind.sigs.k8s.io/dl/${kind_version}/kind-linux-amd64" && \
     chmod +x ./kind && \

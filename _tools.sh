@@ -32,7 +32,7 @@ function _pre_deploy_monitoring_stack () {
                                   --from-file=etcd-ca=ca.crt \
                                   --from-file=etcd-client=peer.crt \
                                   --from-file=etcd-client-key=peer.key \
-                                  etcd-client-cert && \
+                                  etcd-client-cert
 
 }
 

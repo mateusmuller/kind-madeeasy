@@ -14,6 +14,11 @@ source _tools.sh
     exit 1
 }
 
+docker ps &> /dev/null || {
+    echo "It seems you don't have permissions to use docker. Fix it."
+    exit 1
+}
+
 [ ! -x "$(which kind)" ]    && _install_kind
 [ ! -x "$(which kubectl)" ] && _install_kubectl
 [ ! -x "$(which helm)" ]    && _install_helm
@@ -54,3 +59,5 @@ if [ -n "$1" ]; then
         shift
     done
 fi
+
+_build_cluster "${ENABLE_MONITORING}" "${ENABLE_INGRESS}" "${CLUSTER_NAME}"
