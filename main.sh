@@ -45,6 +45,7 @@ function _throw_error_message () {
 
 function _show_help () {
     echo "${OPTIONS}"
+    exit 0
 }
 # ------------------------------------------------------------------------ #
 if [ -n "$1" ]; then
