@@ -60,7 +60,7 @@ function _build_cluster () {
 
     kind get clusters | grep "${cluster_name}" || _build_kind_cluster "${cluster_name}"
 
-    kubectl config use-context "${cluster_name}-kind" 
+    kubectl config use-context "kind-${cluster_name}" 
     
     [ "${enable_ingress}" == "1" ]    && _deploy_ingress
     [ "${enable_monitoring}" == "1" ] && \

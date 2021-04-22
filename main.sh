@@ -51,8 +51,8 @@ function _show_help () {
 if [ -n "$1" ]; then
     while [ -n "$1" ]; do
         case $1 in
-            --no-monitoring) ENABLE_MONITORING="0"          ;;
-            --no-ingress)    ENABLE_INGRESS="0"             ;;
+            --no-monitoring) ENABLE_MONITORING="0"        ;;
+            --no-ingress)    ENABLE_INGRESS="0"           ;;
             --cluster-name)  shift && CLUSTER_NAME="${1}" ;;
             -h|--help)       _show_help                   ;;
             *)               _throw_error_message "${1}"  ;;
