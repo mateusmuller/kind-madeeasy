@@ -22,6 +22,6 @@ $ ./main.sh --cluster-name demo
 
 That's it. It will download kind, kubectl and helm (if they don't exist yet) and build the whole thing.
 
-If you just want the cluster, you can disable the two things with `--no-monitoring` and `--no-ingress`.
+If you just want the cluster, you can disable the two things with `--no-monitoring` and `--no-nginx`.
 
 Feel free to contribute.

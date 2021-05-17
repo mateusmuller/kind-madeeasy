@@ -46,10 +46,30 @@ function _deploy_monitoring () {
 
 }
 
-function _deploy_ingress () {
+function _deploy_nginx () {
 
     kubectl apply -f config/ingress.yml
 
+}
+
+function _deploy_kong () {
+
+    helm repo add kong https://charts.konghq.com && \
+    helm repo update && \
+    helm upgrade --install \
+                 --namespace kong-ingress \
+                 --create-namespace kong kong/kong \
+                 --set ingressController.installCRDs=false
+}
+
+function _deploy_metallb () {
+    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/master/manifests/namespace.yaml && \
+    kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)" && \
+    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/master/manifests/metallb.yaml
+
+    local cidr_kind_network="$(docker network inspect -f '{{.IPAM.Config}}' kind 2> /dev/null | sed 's/[^0-9. /]//g' | cut -d " " -f 1 | cut -d . -f 1,2,3)"
+    
+    sed "s/FROM/${cidr_kind_network}/;s/TO/${cidr_kind_network}/" config/metallb-config.yaml | kubectl apply -f -
 }
 
 function _build_cluster () {
@@ -57,14 +77,21 @@ function _build_cluster () {
     local enable_monitoring="${1}"
     local enable_ingress="${2}"
     local cluster_name="${3}"
+    local enable_kong="${4}"
+    local enable_metallb="${5}"
 
     kind get clusters | grep "${cluster_name}" || _build_kind_cluster "${cluster_name}"
 
-    kubectl config use-context "kind-${cluster_name}" 
-    
-    [ "${enable_ingress}" == "1" ]    && _deploy_ingress
+    kubectl config use-context "kind-${cluster_name}"
+
+    [ "${enable_metallb}" == "1" ] && _deploy_metallb
+
     [ "${enable_monitoring}" == "1" ] && \
         _pre_deploy_monitoring_stack "${cluster_name}" && \
         _deploy_monitoring
+
+    [ "${enable_ingress}" == "1" ] && _deploy_nginx
+    
+    [ "${enable_kong}" == "1" ]    && _deploy_kong
 
 }
